@@ -6,9 +6,9 @@ function __autoload_ottTrinity($class_name)
         {
                 return FALSE;
         }
-        $filename = str_replace('_', DIRECTORY_SEPARATOR, substr($class_name, 11)).'.php';
+        $filename = str_replace('_', DIRECTORY_SEPARATOR, substr($class_name, 11));
 
-        $file = dirname(__FILE__).'/class/'.$filename;
+        $file = dirname(__FILE__).'/class/'.$filename.'.php';
 
         if ( ! file_exists($file))
         {

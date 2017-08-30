@@ -9,8 +9,8 @@ class ottTrinity_Request
         
         public function generate_request_ID()
         {
-                $requestid = time();
+                $m = microtime(true);
                                 
-                return $requestid;
+                return sprintf("%d%07d", floor($m), ($m-floor($m))*1000000);
         }
 }

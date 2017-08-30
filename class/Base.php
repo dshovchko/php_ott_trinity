@@ -6,12 +6,7 @@ class ottTrinity_Base
         
         public function __construct()
         {
-                $this->setEtcPath(realpath(dirname(__FILE__).'/../etc/'));
-        }
-        
-        protected function setEtcPath($path)
-        {
-                $this->etc = $path;
+                $this->etc = realpath(dirname(__FILE__).'/../etc/');
         }
         
         public function getEtcPath()

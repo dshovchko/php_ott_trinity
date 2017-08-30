@@ -25,34 +25,20 @@ class ottTrinity_Connection extends ottTrinity_Base
                 
                 if ($settings = $this->loadSettings($path, $settingsfile))
                 {
-                        $this->setPartnerID($settings['partnerID']);
-                        $this->setSalt($settings['SALT']);
+                        if (array_key_exists('partnerID', $settings))
+                        {
+                                $this->partnerid = $settings['partnerID'];
+                        }
+                        if (array_key_exists('SALT', $settings))
+                        {
+                                $this->salt = $settings['SALT'];
+                        }
                 }
-        }
-        
-        public function setPartnerID($partnerid)
-        {
-                $this->partnerid = $partnerid;
-        }
-        
-        public function getPartnerID()
-        {
-                return $this->partnerid;
-        }
-        
-        public function setSalt($salt)
-        {
-                $this->salt = $salt;
-        }
-        
-        public function getSalt()
-        {
-                return $this->salt;
         }
         
         public function send($request)
         {
-                $query = $request->query($this->getPartnerID(), $this->getSalt());
+                $query = $request->query($this->partnerid, $this->salt);
                 
                 $json = @file_get_contents('http://partners.trinity-tv.net/partners/user/'.$query);
                 if ($json === false)
