@@ -11,6 +11,21 @@ class ottTrinity_Response
                 
         }
         
+        public function requestid()
+        {
+                return $this->requestid;
+        }
+        
+        public function result()
+        {
+                return $this->result;
+        }
+        
+        public function error()
+        {
+                return $this->error;
+        }
+        
         protected function corrupted($result, $message=null)
         {
                 $this->result = $result;
@@ -27,5 +42,14 @@ class ottTrinity_Response
                         return $ar[$name];
                 }
                 return null;
+        }
+        
+        protected function match_request($request)
+        {
+                if ($this->requestid != $request->id())
+                {
+                        return false;
+                }
+                return true;
         }
 }
