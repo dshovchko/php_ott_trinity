@@ -49,11 +49,12 @@ class ottTrinity_Log
         public function error($message)
         {
                 $this->_errors[] = $this->format($message);
+                $this->_messages[] = $this->format("Error: {$message}");
         }
         
         public function debug($message)
         {
-                $this->_debugs[] = $this->format($message);
+                $this->_debugs[] = $message . PHP_EOL . PHP_EOL;
         }
         
         public function write()
