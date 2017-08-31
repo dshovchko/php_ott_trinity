@@ -4,32 +4,25 @@ class ottTrinity_Response_Subscriberlist extends ottTrinity_Response
 {
         protected $subscribers = array();
         
-        public function __construct($json)
+        public function __construct($request, $json)
         {
-                $ar = json_decode($json, true);
-                var_dump($ar);
+                $data = json_decode($json, true);
                 
-                if (array_key_exists('requestid', $ar))
-                {
-                        $this->setRequestID($ar['requestid']);
-                }
+                $this->requestid = $this->findElement($data, 'requestid');
+                $this->result = $this->findElement($data, 'result');
+                $this->subscribers = $this->findElement($data, 'subscribers2');
                 
-                if (array_key_exists('result', $ar))
+                if ( ! isset($this->requestid, $this->result, $this->subscribers))
                 {
-                        $this->setResult($ar['result']);
+                        $this->corrupted('badresponse', 'Response does not contain the required fields');
+                        
+                        return;
                 }
-                
-                if (array_key_exists('subscribers', $ar))
+                if ( ! $this->match($request))
                 {
-                        foreach($ar['subscribers'] as $localid=>$arl)
-                        {
-                                $this->addSubscriber($arl);
-                        }
+                        $this->corrupted('badresponse', 'This is the response to another request');
+                        
+                        return;
                 }
-        }
-        
-        protected function addSubscriber($subscriber)
-        {
-                $this->subscribers[] = $subscriber;
         }
 }
