@@ -2,25 +2,23 @@
 
 class ottTrinity_Request_Subscriberlist extends ottTrinity_Request
 {
+        protected $name = 'subscriberlist';
+        
         public function __construct()
         {
-                
+                parent::__construct();
         }
         
         public function query($partnerid, $salt)
         {
-                $requestid = $this->generate_request_ID();
-                
-                $s = 'subscriberlist'
-                . '?requestid='.$requestid
+                return $this->name()
+                . '?requestid='.$this->id()
                 . '&partnerid='.$partnerid
-                . '&hash='.md5($requestid.$partnerid.$salt);
-                
-                return $s;
+                . '&hash='.md5($this->id().$partnerid.$salt);
         }
         
         public function response($json)
         {
-                return new ottTrinity_Response_Subscriberlist($json);
+                return new ottTrinity_Response_Subscriberlist($this, $json);
         }
 }
