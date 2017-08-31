@@ -6,9 +6,9 @@ class ottTrinity_Connection extends ottTrinity_Base
         
         protected $salt = 'abcdef';
         
-        public function __construct($logging = false, $settingsfile = null)
+        public function __construct($debug = false, $settingsfile = null)
         {
-                parent::__construct();
+                parent::__construct($debug);
                 
                 $path = $this->getEtcPath();
                 if (!$settingsfile)
@@ -39,15 +39,18 @@ class ottTrinity_Connection extends ottTrinity_Base
         public function send($request)
         {
                 $query = $request->query($this->partnerid, $this->salt);
+                ottTrinity_Log::getInstance()->debug("query: {$query}");
+                ottTrinity_Log::getInstance()->add("send request '{$request->name()}'");
                 
                 $json = @file_get_contents('http://partners.trinity-tv.net/partners/user/'.$query);
                 if ($json === false)
                 {
-                        //$response = new
-                        return null;
+                        // not response
+                        return  new ottTrinity_Response_No($request, 'Can not receive a response to a request');
                 }
+                ottTrinity_Log::getInstance()->debug("get json: {$json}");
+                
                 $response = $request->response($json);
-                print_r($response);
                 
                 return $response;
         }
@@ -55,7 +58,7 @@ class ottTrinity_Connection extends ottTrinity_Base
         protected function loadSettings($directory, $settingsfile)
         {
                 $result = array();
-                if (is_readable($directory . '/'.$settingsfile))
+                if (is_readable($directory . '/' . $settingsfile))
                 {
                         $settings = file($directory . '/' . $settingsfile, FILE_IGNORE_NEW_LINES);
                         foreach ($settings as $setting)
