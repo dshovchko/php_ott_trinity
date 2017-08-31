@@ -2,15 +2,26 @@
 
 class ottTrinity_Request
 {
+        protected $name;
+        protected $id;
+        
         public function __construct()
         {
-                
-        }
-        
-        public function generate_request_ID()
-        {
+                /*
+                 *      generation of a request id
+                 */
                 $m = microtime(true);
                                 
-                return sprintf("%d%07d", floor($m), ($m-floor($m))*1000000);
+                $this->id = sprintf("%d%07d", floor($m), ($m-floor($m))*1000000);
+        }
+        
+        public function name()
+        {
+                return (isset($this->name)?$this->name:'unknown');
+        }
+        
+        public function id()
+        {
+                return $this->id;
         }
 }
