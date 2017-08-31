@@ -11,13 +11,21 @@ class ottTrinity_Response
                 
         }
         
-        protected function setRequestID($requestid)
-        {
-                $this->requestid = $requestid;
-        }
-        
-        protected function setResult($result)
+        protected function corrupted($result, $message=null)
         {
                 $this->result = $result;
+                $this->error = $message;
+                
+                ottTrinity_Log::getInstance()->debug("Error: {$message}");
+                ottTrinity_Log::getInstance()->error($message);
+        }
+        
+        protected function findElement($ar, $name)
+        {
+                if (array_key_exists($name, $ar))
+                {
+                        return $ar[$name];
+                }
+                return null;
         }
 }
