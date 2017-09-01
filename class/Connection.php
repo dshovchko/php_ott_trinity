@@ -1,16 +1,18 @@
 <?php
 
-class ottTrinity_Connection extends ottTrinity_Base
+class ottTrinity_Connection
 {
         protected $partnerid = 0;
         
         protected $salt = 'abcdef';
         
+        protected $logpath;
+        protected $logprefix = 'ottTrinity';
+        
         public function __construct($debug = false, $settingsfile = null)
         {
-                parent::__construct($debug);
-                
-                $path = $this->getEtcPath();
+                $this->logpath = realpath(dirname(__FILE__).'/../log/');
+                $path = realpath(dirname(__FILE__).'/../etc/');
                 if (!$settingsfile)
                 {
                         $settingsfile = 'ottTrinity.ini';
@@ -33,7 +35,20 @@ class ottTrinity_Connection extends ottTrinity_Base
                         {
                                 $this->salt = $settings['SALT'];
                         }
+                        if (array_key_exists('logpath', $settings))
+                        {
+                                $this->logpath = $settings['logpath'];
+                        }
+                        if (array_key_exists('logprefix', $settings))
+                        {
+                                $this->logprefix = $settings['logprefix'];
+                        }
                 }
+                
+                ottTrinity_Log::$path = $this->logpath;
+                ottTrinity_Log::$prefix = $this->logprefix;
+                ottTrinity_Log::$debug = $debug;
+                ottTrinity_Log::getInstance()->debug("connection initialized");
         }
         
         public function send($request)
@@ -66,7 +81,10 @@ class ottTrinity_Connection extends ottTrinity_Base
                                 list($param, $value) = explode('=', $setting, 2);
                                 $param = trim($param);
                                 $value = trim($value);
-                                $result[$param] = $value;
+                                if (substr($param, 0, 1) != '#')
+                                {
+                                        $result[$param] = $value;
+                                }
                         }
                         return $result;
                 }
